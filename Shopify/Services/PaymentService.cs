@@ -42,7 +42,7 @@ namespace Shopify.Services
                         if (Checkout(checkoutData.striptoken, customerId, cart,amount))
                         {
                             cart.Payed = true;
-                            cart.StatusId = (int?)StatusEnum.Approved;              // approved
+                            cart.StatusId = _db.Statuses.FirstOrDefault(f=>f.StatusName==StatusEnum.Approved.ToString()).StatusId;              // approved
                             cart.OrderDate = DateTime.Now;
                             _db.SaveChanges();
                             // payed done

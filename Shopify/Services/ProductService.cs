@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Shopify.Helper;
 using Shopify.Models;
 using Shopify.Services.Interfaces;
+using Shopify.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -265,11 +266,22 @@ namespace Shopify.Repository.Interfaces
 
 
 
-        public List<Product> SearchProduct(string name)
-        {
-            return _db.Products.Include(i => i.ProductImages).Where(p => p.ProductName.Contains(name) && p.IsdeletedBySeller == false && p.Active == true).ToList();
-        }
+        //public List<Product> SearchProduct(string name)
+        //{
+        //    return _db.Products.Include(i => i.ProductImages).Where(p => p.ProductName.Contains(name) && p.IsdeletedBySeller == false && p.Active == true).ToList();
+        //}
 
+        public SearchViewModel SearchProduct(string name)
+        {
+            SearchViewModel search = new SearchViewModel();
+            //return _db.Products.Include(i => i.ProductImages).Where(p => p.ProductName.Contains(name) && p.IsdeletedBySeller == false && p.Active == true).ToList();
+            search.products = _db.Products.Include(i => i.ProductImages).Where(p => p.ProductName.Contains(name) && p.IsdeletedBySeller == false && p.Active == true).ToList();
+            search.Brands = _db.Brands.Where(p => p.BrandName.Contains(name) && p.Isdeleted == false ).ToList();
+            search.subCategories = _db.SubCategories.Where(p => p.Name.Contains(name) && p.Isdeleted == false).ToList();
+
+            return search;
+
+        }
 
 
 

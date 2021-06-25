@@ -57,8 +57,8 @@ namespace Shopify.Services
         public bool ChangeCartStatus(int id, int statusId, IIdentity identity)
         {
             string employeeId= HelperMethods.GetAuthnticatedUserId(identity);
-            Status status = _db.Statuses.FirstOrDefault(s => s.StatusId == statusId && s.StatusId!=(int)StatusEnum.Approved && s.Isdeleted == false );
-            Cart cart = _db.Carts.FirstOrDefault(s => s.CartId == id && s.Isdeleted == false && s.StatusId !=(int)StatusEnum.Arrived);
+            Status status = _db.Statuses.FirstOrDefault(s => s.StatusId == statusId && s.StatusName!=StatusEnum.Approved.ToString()&& s.Isdeleted == false );
+            Cart cart = _db.Carts.Include(r=>r.Status).FirstOrDefault(s => s.CartId == id && s.Isdeleted == false && s.Status.StatusName !=StatusEnum.Arrived.ToString());
             
             if (status != null && cart !=null )
             {
@@ -80,7 +80,7 @@ namespace Shopify.Services
 
         public List<Cart> GetNotArrivedCarts()
         {
-            return _db.Carts.Where(r => r.Isdeleted == false && r.Payed == true && r.StatusId != (int)StatusEnum.Approved).ToList();
+            return _db.Carts.Include(s=>s.Status).Where(r => r.Isdeleted == false && r.Payed == true && r.Status.StatusName !=StatusEnum.Approved.ToString()).ToList();
         }
 
 
