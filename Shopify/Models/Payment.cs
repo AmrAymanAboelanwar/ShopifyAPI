@@ -11,7 +11,7 @@ namespace Shopify.Models
 
         public int PaymentId { get; set; }
         public string type { get; set; }
-        public float amount { get; set; }
+        public double amount { get; set; }
         public DateTime CreatedAt { get; set; }
 
         public virtual Cart Cart { get; set; }

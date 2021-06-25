@@ -86,6 +86,7 @@ namespace Shopify
             services.Configure<JwtHelper>(Configuration.GetSection("JWT"));
             services.Configure<EmailConfiuration>(Configuration.GetSection("MailSettings"));
             services.Configure<FacebookSettings>(Configuration.GetSection("facebookConfig"));
+            services.Configure<StripSettings>(Configuration.GetSection("StripAPi"));
 
             services.AddAuthentication(options =>
             {
@@ -131,6 +132,7 @@ namespace Shopify
             services.AddScoped<FacebookService>();
             services.AddScoped<FacebookSettings>();
             services.AddScoped<ReviewService>();
+            services.AddScoped<PaymentService>();
             services.AddHttpClient();
             
 
@@ -187,6 +189,10 @@ namespace Shopify
             {
                 endpoints.MapControllers();
             });
+
+
+            Stripe.StripeConfiguration.ApiKey= Configuration["StripAPi:secretKey"];
+
         }
     }
 }
