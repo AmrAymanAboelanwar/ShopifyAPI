@@ -164,7 +164,7 @@ namespace Shopify.Controllers
 
 
 
-        // get all size for specific sub-category
+        // get range money for specific sub-category
         [AllowAnonymous]
         [HttpGet("range-money/{id}")]
         public ActionResult<List<string>> GetRangeMoney(int id)
@@ -175,6 +175,24 @@ namespace Shopify.Controllers
                 return NotFound();
             }
             return Ok(result);
+
+        }
+
+
+
+        // filter by rate
+        [AllowAnonymous]
+        [HttpGet("rate/{id}/{rate}")]
+        public ActionResult<List<string>> GetByRate(int id , int rate)
+        {
+            if (rate > 0 && rate < 6)
+            {
+                var result = _subCategoryRepo.GetByRateForSubCategory(id, rate);
+               if(result.Status=="Success")
+                return Ok(result.data);
+                return NotFound();
+            }
+            return BadRequest();
 
         }
 

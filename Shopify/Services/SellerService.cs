@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Shopify.Helper;
 using Shopify.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Principal;
 using System.Threading.Tasks;
 
 namespace Shopify.Repository
@@ -97,12 +99,54 @@ namespace Shopify.Repository
         }
 
 
-        //// get seller orders
-        //public object SellerOrders()
-        //{
-        //  var products = _db.Carts.Include(r => r.CartItems).ThenInclude(p => p.Product).Where(r => r.Approved == true && r.Isdeleted==false).Select(r=>r.CartItems.Where(r=>r.Isdeleted==false));
-        //  return products;
-        //}
+   
+
+
+        // get seller orders
+        public List<Product> SellerOrders(IIdentity seller)
+        {
+            string sellerId = HelperMethods.GetAuthnticatedUserId(seller);
+             List<Product> sellerProducts = new List<Product>(); // get seller's products
+             List<Inventory> inventories = _db.Inventories.Include(ip => ip.InventoryProducts).ThenInclude(r => r.Product).ThenInclude(p => p.ProductImages).Where(i => i.sellerId == sellerId && i.Isdeleted == false).ToList();
+             List<List<Product>> products = inventories.Select(f => f.InventoryProducts.Where(f => f.Isdeleted == false).Select(f => f.Product).Where(r => r.IsdeletedBySeller == false).ToList()).ToList();
+             foreach (var item in products)
+             {
+                sellerProducts.AddRange(item);
+             }
+
+            List<List<CartItem>> cartitems = _db.Carts.Include(r => r.Status).Include(r => r.CartItems.Where(r => r.Isdeleted == false)).Where(r => r.Isdeleted == false && r.Payed == true && r.Status.StatusName == StatusEnum.Approved.ToString()).Select(f=>f.CartItems).ToList();
+            List<CartItem> prderProducts = new List<CartItem>(); // get order's products
+            foreach (var item in cartitems)
+            {
+                prderProducts.AddRange(item);
+            }
+
+
+            List<Product> orders = new List<Product>(); //orders
+            foreach (var item in sellerProducts)
+            {
+                prderProducts.ForEach(p => { 
+                
+                    if(p.ProductId == item.ProductId)
+                    {
+                        item.Quantity = p.Quantity;
+                        orders.Add(item);
+                    }
+                });
+            }
+
+
+            return orders;
+
+
+        }
+
+
+
+
+
+
+
 
 
     }

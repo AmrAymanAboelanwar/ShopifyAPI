@@ -11,7 +11,7 @@ using Shopify.Repository;
 using Microsoft.AspNetCore.Authorization;
 
 namespace Shopify.Controllers
-{   [Authorize(Roles ="Admin")]
+{  
     [Route("api/[controller]")]
     [ApiController]
     public class SellerController : ControllerBase
@@ -28,6 +28,7 @@ namespace Shopify.Controllers
         }
 
         //get active sellers data
+        [Authorize(Roles = "Admin")]
         [HttpGet("Active")]
         public ActionResult<List<Seller>> GetAllActive()
         {
@@ -36,6 +37,7 @@ namespace Shopify.Controllers
 
 
         //get waiting sellers data
+        [Authorize(Roles = "Admin")]
         [HttpGet("waiting")]
         public ActionResult<List<Seller>> GetAllWaitingSeller()
         {
@@ -47,6 +49,7 @@ namespace Shopify.Controllers
 
 
         //get seller by id
+        [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
         public async Task<ActionResult<Seller>> GetSellerById(string id)
         {
@@ -58,6 +61,7 @@ namespace Shopify.Controllers
             return seller;
         }
         //edit seller
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<ActionResult<ApplicationUser>> EditSellerAsync(string id, [FromBody] ApplicationUser user)
         {
@@ -76,6 +80,7 @@ namespace Shopify.Controllers
 
         }
         // delete seller
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteSeller(string id)
         {
@@ -99,7 +104,8 @@ namespace Shopify.Controllers
 
 
         // apply seller
-         [HttpGet("apply/{id}")]
+        [Authorize(Roles = "Admin")]
+        [HttpGet("apply/{id}")]
          public ActionResult ApplySeller(string id)
          {
            var result = _sellerRepo.ApplySeller(id);
@@ -113,6 +119,7 @@ namespace Shopify.Controllers
 
 
         // block seller
+        [Authorize(Roles = "Admin")]
         [HttpGet("block/{id}")]
         public ActionResult BlockSeller(string id)
         {
@@ -124,15 +131,16 @@ namespace Shopify.Controllers
 
 
 
-        //// block seller
-        //[HttpGet("aa")]
-        //public ActionResult BlockSellera(string id)
-        //{
-        //    var result = _sellerRepo.SellerOrders();
-            
-        //        return NoContent();
-          
-        //}
+        // get orders
+        [HttpGet("orders")]
+        [Authorize(Roles = "Seller")]
+        public ActionResult SellerOrder()
+        {
+           _sellerRepo.SellerOrders(User.Identity);
+
+            return NoContent();
+
+        }
 
 
     }

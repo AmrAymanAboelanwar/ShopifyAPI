@@ -147,6 +147,18 @@ namespace Shopify.Repository
 
         }
 
+        public Response GetByRateForSubCategory(int id, int rate)
+        {
+            SubCategory subCategory = GetSubCategory(id);
+            if (subCategory != null)
+            {
+                List<Product> products= _db.Products.Where(p => p.SubCategotyId == id && p.Active == true && p.IsdeletedBySeller == false &&p.Rate ==rate ).ToList();
+                return new Response { Status = "Success", data = products };
+            }
+            return new Response { Status="Error" ,Message="Not Found"};
+        }
+
+
 
         // get range money
         public List<float> GetRangeModenyForSubCategory(int id)
