@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Shopify.Helper;
 using Shopify.Models;
 using Shopify.Services;
 using System;
@@ -53,6 +54,39 @@ namespace Shopify.Controllers
                 return Ok(cart);
             return NotFound();
         }
+
+
+
+
+
+
+        // change status for cart 
+        
+        [HttpPut("{id}")]
+        [Authorize(Roles = "Employee")]
+        public ActionResult<Cart> ChangeStatus(int id ,[FromBody] int statusId)
+        {
+            bool result = _cartService.ChangeCartStatus(id,statusId,User.Identity);
+            if (result)
+                return NoContent();
+            return NotFound();
+        }
+
+
+
+        // get carts 
+        [HttpGet("not-arrived")]
+        [Authorize(Roles = "Employee")]
+        public ActionResult<Cart> GetNotArrivedCarts()
+        {
+            List<Cart> carts = _cartService.GetNotArrivedCarts();
+            return Ok(carts);
+        }
+
+
+
+
+
 
 
 

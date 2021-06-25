@@ -19,4 +19,13 @@ namespace Shopify.Models
 
         public virtual  List<Cart> Carts { get; set; }
     }
+
+
+    enum StatusEnum
+    {
+        Approved=2, 
+        Shipping=3, 
+        Arrived=4, 
+            
+    }
 }

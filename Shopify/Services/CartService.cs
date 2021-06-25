@@ -52,6 +52,39 @@ namespace Shopify.Services
             return null;
         }
 
+
+
+        public bool ChangeCartStatus(int id, int statusId, IIdentity identity)
+        {
+            string employeeId= HelperMethods.GetAuthnticatedUserId(identity);
+            Status status = _db.Statuses.FirstOrDefault(s => s.StatusId == statusId && s.StatusId!=(int)StatusEnum.Approved && s.Isdeleted == false );
+            Cart cart = _db.Carts.FirstOrDefault(s => s.CartId == id && s.Isdeleted == false && s.StatusId !=(int)StatusEnum.Arrived);
+            
+            if (status != null && cart !=null )
+            {
+                if (statusId == (int)StatusEnum.Shipping)
+                {
+                    cart.ShippingDate = DateTime.Now;
+                }else
+                {
+                    cart.DueDate = DateTime.Now;
+                }
+                cart.StatusId = statusId;
+                cart.EmployeeId = employeeId;
+                _db.SaveChanges();
+                return true;
+            }
+            return false;
+             
+        }
+
+        public List<Cart> GetNotArrivedCarts()
+        {
+            return _db.Carts.Where(r => r.Isdeleted == false && r.Payed == true && r.StatusId != (int)StatusEnum.Approved).ToList();
+        }
+
+
+
         // get  cart
         public Cart GetCart(int id , IIdentity Customer)
         {
