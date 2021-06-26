@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shopify.Helper;
 using Shopify.Models;
+using Shopify.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +22,7 @@ namespace Shopify.Repository
 
         public void AddSellerId(string id , string storeName , List<string > documents)
         {
-            _db.Sellers.Add(new Seller() { SellerId = id  ,StoreName = storeName, Contract= documents[0], NationalCard = documents[1], TaxCard=documents[2], CommercialRegistryCard = documents[3] });
+            _db.Sellers.Add(new Seller() { SellerId = id  ,StoreName = storeName, Contract= IPort.Port+documents[0], NationalCard = IPort.Port+documents[1], TaxCard= IPort.Port+documents[2], CommercialRegistryCard = IPort.Port+documents[3] });
            _db.SaveChanges();
         }
 
