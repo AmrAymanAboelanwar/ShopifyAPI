@@ -86,6 +86,13 @@ namespace Shopify.Controllers
 
 
 
+        // get payed customer carts
+        [HttpGet("customer-payed")]
+        [Authorize(Roles = "Customer")]
+        public ActionResult<Cart> GetCartsPayedForCustomer()
+        {
+          return Ok(_cartService.GetCartsPayedForCustomer(User.Identity)); 
+        }
 
 
 

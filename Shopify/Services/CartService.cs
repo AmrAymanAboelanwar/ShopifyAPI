@@ -78,6 +78,13 @@ namespace Shopify.Services
              
         }
 
+        public List<Cart> GetCartsPayedForCustomer(IIdentity customer)
+        {
+           var customerId= HelperMethods.GetAuthnticatedUserId(customer);
+           List<Cart> carts = _db.Carts.Include(r => r.Status).Where(r => r.CustomerID == customerId && r.Payed == true && r.Isdeleted==false).ToList();
+            return carts;
+        }
+
         public List<Cart> GetNotArrivedCarts()
         {
             return _db.Carts.Include(s=>s.Status).Where(r => r.Isdeleted == false && r.Payed == true && r.Status.StatusName !=StatusEnum.Approved.ToString()).ToList();
