@@ -105,7 +105,7 @@ namespace Shopify.Controllers
 
         // apply seller
         [Authorize(Roles = "Admin")]
-        [HttpGet("apply/{id}")]
+        [HttpPost("apply/{id}")]
          public ActionResult ApplySeller(string id)
          {
            var result = _sellerRepo.ApplySeller(id);
@@ -120,7 +120,7 @@ namespace Shopify.Controllers
 
         // block seller
         [Authorize(Roles = "Admin")]
-        [HttpGet("block/{id}")]
+        [HttpPost("block/{id}")]
         public ActionResult BlockSeller(string id)
         {
             var result = _sellerRepo.BlockSeller(id);
