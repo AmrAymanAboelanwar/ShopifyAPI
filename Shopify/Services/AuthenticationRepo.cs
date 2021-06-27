@@ -288,17 +288,11 @@ namespace Shopify.Repository
 
 
             await _manageRoles.AddToEmployeeRole(user);
-            return new Response { Status = "Success", Message = "done" };
-            //var token = await CreateJwtToken(user);
-            //{
-            //    Email = user.Email,
-            //    UserName = username,
-            //    Role = "Employee",
-            //    Token = new JwtSecurityTokenHandler().WriteToken(token),
-            //    ExpireDate = token.ValidTo,
-            //    IsAuthenticated = true
+            _employeeRepo.AddEmployeeId(user.Id, model.Salary, DateTime.Now);
 
-            //};
+
+            return new Response { Status = "Success", Message = "done" };
+           
         }
 
         public async Task<ResponseAuth> RegisterSellerAsync(RegisterSellerModel model , IFormFile[] files)

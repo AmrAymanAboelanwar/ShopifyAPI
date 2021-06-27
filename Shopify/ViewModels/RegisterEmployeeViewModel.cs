@@ -8,7 +8,7 @@ namespace Shopify.ViewModels
 {
     public class RegisterEmployeeViewModel:RegisterModel
     {
-        public DateTime hireDate { get; set; } = DateTime.Now;
+        public DateTime hireDate { get; set; }
 
         [Required]
         public float Salary { get; set; }
