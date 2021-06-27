@@ -72,12 +72,10 @@ namespace Shopify.Controllers
                 if (model.Salary > 0)
                 {
                     var result = await _authentication.RegisterEmployeeAsync(model);
-                    {
-                        return BadRequest(result.Message);
-                    }
-                    return Ok(result);
+                    if(result.Status== "Success")
+                     return Ok(result);
                 }
-                return BadRequest();
+                return Conflict();
             }
             return BadRequest(ModelState);
         }

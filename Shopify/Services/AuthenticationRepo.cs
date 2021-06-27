@@ -259,10 +259,10 @@ namespace Shopify.Repository
         {
             string username = model.Email.Split('@')[0];
             if (await _userManager.FindByEmailAsync(model.Email) != null)
-                return new Response { Message = "Email is already Exist" };
+                return new Response { Status="Error" ,Message = "Email is already Exist" };
 
             if (await _userManager.FindByNameAsync(username) != null)
-                return new Response { Message = "Username is already Exist" };
+                return new Response { Status = "Error",Message = "Username is already Exist" };
 
             ApplicationUser user = new ApplicationUser()
             {
@@ -270,7 +270,8 @@ namespace Shopify.Repository
                 Lname = model.Lname,
                 Address = model.Address,
                 Email = model.Email,
-                SecurityStamp = Guid.NewGuid().ToString()
+                SecurityStamp = Guid.NewGuid().ToString(),
+                UserName=username
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
