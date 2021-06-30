@@ -51,15 +51,35 @@ namespace Shopify.Controllers
         //get seller by id
         [Authorize(Roles = "Admin")]
         [HttpGet("{id}")]
-        public async Task<ActionResult<Seller>> GetSellerById(string id)
+        public  ActionResult GetSellerById(string id)
         {
-            var seller = await _shopifyContext.Sellers.Include( "ApplicationUser" ).FirstOrDefaultAsync(s=>s.SellerId==id);
+            Seller seller = _sellerRepo.GetSellerByID(id);
             if (seller == null)
             {
                 return NotFound();
             }
-            return seller;
+            return Ok(seller);
         }
+
+
+
+
+        //get seller info
+        [Authorize(Roles = "Seller")]
+        public ActionResult GetSellerInfo()
+        {
+            Seller seller = _sellerRepo.GetSellerInfo(User.Identity);
+            if (seller == null)
+            {
+                return NotFound();
+            }
+            return Ok(seller);
+        }
+
+
+
+
+
         //edit seller
         [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]

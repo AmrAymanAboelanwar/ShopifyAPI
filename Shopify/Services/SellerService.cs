@@ -67,6 +67,8 @@ namespace Shopify.Repository
             return userSeller;
         }
 
+     
+
         public bool ApplySeller(string id)
         {
            Seller seller = _db.Sellers.Include(a=>a.ApplicationUser).FirstOrDefault(s => s.SellerId == id);
@@ -147,7 +149,20 @@ namespace Shopify.Repository
 
 
 
+        // get seller by Id
+        public Seller GetSellerByID(string id)
+        {
+            return  _db.Sellers.Include(e => e.ApplicationUser).FirstOrDefault(f => f.Isdeleted == false && f.SellerId == id);
+        }
 
+
+
+        // get seller info
+
+        public Seller GetSellerInfo(IIdentity seller)
+        {
+            return _db.Sellers.Include(e => e.ApplicationUser).FirstOrDefault(f => f.Isdeleted == false && f.SellerId == HelperMethods.GetAuthnticatedUserId(seller));
+        }
 
 
     }

@@ -271,15 +271,9 @@ namespace Shopify.Repository.Interfaces
         //    return _db.Products.Include(i => i.ProductImages).Where(p => p.ProductName.Contains(name) && p.IsdeletedBySeller == false && p.Active == true).ToList();
         //}
 
-        public SearchViewModel SearchProduct(string name)
+        public List<Product> SearchProduct(string name)
         {
-            SearchViewModel search = new SearchViewModel();
-            //return _db.Products.Include(i => i.ProductImages).Where(p => p.ProductName.Contains(name) && p.IsdeletedBySeller == false && p.Active == true).ToList();
-            search.products = _db.Products.Include(i => i.ProductImages).Where(p => p.ProductName.Contains(name) && p.IsdeletedBySeller == false && p.Active == true).ToList();
-            search.Brands = _db.Brands.Where(p => p.BrandName.Contains(name) && p.Isdeleted == false ).ToList();
-            search.subCategories = _db.SubCategories.Where(p => p.Name.Contains(name) && p.Isdeleted == false).ToList();
-
-            return search;
+            return _db.Products.Include(r=>r.Brand).Include(s=>s.subCategory).Include(i => i.ProductImages).Where(p =>( p.ProductName.Contains(name) || p.Brand.BrandName.Contains(name) || p.subCategory.Name.Contains(name))&&p.Brand.Isdeleted==false &&p.subCategory.Isdeleted==false && p.IsdeletedBySeller == false && p.Active == true).ToList();
 
         }
 
@@ -287,7 +281,7 @@ namespace Shopify.Repository.Interfaces
 
         public List<Product>  GetTopSeales()
         {
-            return  _db.Products.Include(r=>r.ProductImages).Where(p=>p.IsdeletedBySeller==false && p.Active ==true).OrderByDescending(p => p.QuantitySealed).Take(5).ToList();
+            return  _db.Products.Include(r=>r.ProductImages).Where(p=>p.IsdeletedBySeller==false && p.Active ==true).OrderByDescending(p => p.QuantitySealed).ToList();
          
         }
 
@@ -295,7 +289,7 @@ namespace Shopify.Repository.Interfaces
 
         public List<Product> GetTopDeals()
         {
-            return _db.Products.Include(r => r.ProductImages).Where(p => p.IsdeletedBySeller == false && p.Active == true).OrderByDescending(p => p.Discount).Take(5).ToList();
+            return _db.Products.Include(r => r.ProductImages).Where(p => p.IsdeletedBySeller == false && p.Active == true).OrderByDescending(p => p.Discount).ToList();
 
         }
 
@@ -338,9 +332,6 @@ namespace Shopify.Repository.Interfaces
             return new Response { Status = "Error2", Message = "Not Found" };
 
         }
-
-
-
 
 
 
