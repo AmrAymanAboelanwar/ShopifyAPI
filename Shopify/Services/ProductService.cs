@@ -47,7 +47,7 @@ namespace Shopify.Repository.Interfaces
                 }
                 catch (Exception e)
                 {
-
+                    var c = e;
                 }
 
 

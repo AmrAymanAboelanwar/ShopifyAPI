@@ -68,10 +68,10 @@ namespace Shopify.Models
         public DateTime UpdatedAt { get; set; }
         public virtual List<ProductImages> ProductImages { get; set; }
 
-        [Required]
+       
         [ForeignKey("Brand")]
 
-        public int BrandId { get; set; }
+        public int? BrandId { get; set; }
         public virtual Brand Brand { get; set; }
 
         [Required]
