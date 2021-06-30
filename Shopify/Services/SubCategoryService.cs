@@ -23,7 +23,7 @@ namespace Shopify.Repository
         // get sub category by id
         public SubCategory GetSubCategory(int id)
         {
-            SubCategory result= _db.SubCategories.Include("Products").Where(c => c.SubCategoryId == id && c.Isdeleted == false).FirstOrDefault();
+            SubCategory result= _db.SubCategories.Include(r=>r.Products).ThenInclude(r=>r.ProductImages).Where(c => c.SubCategoryId == id && c.Isdeleted == false).FirstOrDefault();
             return result;
         }
 

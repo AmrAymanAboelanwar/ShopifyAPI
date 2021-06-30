@@ -82,6 +82,7 @@ namespace Shopify.Services
                 ReceiptEmail = customer.Email,
                 
             };
+
             var service = new ChargeService();
             Charge charge = service.Create(options);
             if (charge.Status == "succeeded")

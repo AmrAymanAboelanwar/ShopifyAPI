@@ -146,11 +146,6 @@ namespace Shopify.Repository
 
         // login with google 
 
-
-
-
-
-
         public async Task<ResponseAuth> LoginWithGoogleAsync(Payload payload)
         {
             var user = await _userManager.FindByEmailAsync(payload.Email);
@@ -289,8 +284,6 @@ namespace Shopify.Repository
 
             await _manageRoles.AddToEmployeeRole(user);
             _employeeRepo.AddEmployeeId(user.Id, model.Salary, DateTime.Now);
-
-
             return new Response { Status = "Success", Message = "done" };
            
         }

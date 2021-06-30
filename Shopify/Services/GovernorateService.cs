@@ -80,6 +80,7 @@ namespace Shopify.Repository
 
         public bool IsGovernorateInRelation(int id)
         {
+            
             List<Cart> carts = _db.Governorates.Include(p => p.Carts.Where(e => e.Isdeleted == false )).FirstOrDefault(b => b.GovernorateId == id && b.Isdeleted == false).Carts;
             if (carts.Count > 0)
                 return true;
