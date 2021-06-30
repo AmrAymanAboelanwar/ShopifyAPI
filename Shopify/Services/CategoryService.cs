@@ -27,7 +27,7 @@ namespace Shopify.Repository.Interfaces
         // get category by id
         public Category GetCategory(int id)
         {
-            Category category = _db.Categories.Include(e=>e.Isdeleted==false).SingleOrDefault(c => c.CategoryId == id&&c.Isdeleted==false);
+            Category category = _db.Categories.Include(e=>e.SubCategories.Where(a=>a.Isdeleted==false)).SingleOrDefault(c => c.CategoryId == id&&c.Isdeleted==false);
             return category;
         }
 
