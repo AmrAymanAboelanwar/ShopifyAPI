@@ -21,13 +21,13 @@ namespace Shopify.Repository.Interfaces
         // get all categories
         public List<Category> GetAllCategories()
         {
-            return _db.Categories.Include(s=>s.SubCategories).Where(c=>c.Isdeleted==false).ToList();
+            return _db.Categories.Include(s=>s.SubCategories.Where(d=>d.Isdeleted==false)).Where(c=>c.Isdeleted==false).ToList();
         }
 
         // get category by id
         public Category GetCategory(int id)
         {
-            Category category = _db.Categories.Include("SubCategories").SingleOrDefault(c => c.CategoryId == id&&c.Isdeleted==false);
+            Category category = _db.Categories.Include(e=>e.Isdeleted==false).SingleOrDefault(c => c.CategoryId == id&&c.Isdeleted==false);
             return category;
         }
 
