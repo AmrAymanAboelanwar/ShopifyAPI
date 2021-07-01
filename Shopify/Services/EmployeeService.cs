@@ -38,11 +38,11 @@ namespace Shopify.Repository
 
         public bool DeleteEmployee(string id)
         {
-           Employee employee = _db.Employees.Include(i=>i.ApplicationUser).FirstOrDefault(e => e.EmployeeId == id && e.ApplicationUser.AdminLocked == false);
+           Employee employee = _db.Employees.Include(i=>i.ApplicationUser).FirstOrDefault(e => e.EmployeeId == id && e.Isdeleted == false);
         
            if(employee!=null)
             {
-                employee.ApplicationUser.AdminLocked = true;
+                employee.Isdeleted = true;
                 _db.SaveChanges();
                 return true;
             }
