@@ -66,6 +66,7 @@ namespace Shopify.Controllers
 
         //get seller info
         [Authorize(Roles = "Seller")]
+        [HttpGet]
         public ActionResult GetSellerInfo()
         {
             Seller seller = _sellerRepo.GetSellerInfo(User.Identity);
