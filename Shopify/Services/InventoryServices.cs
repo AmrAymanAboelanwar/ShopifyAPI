@@ -21,7 +21,7 @@ namespace Shopify.Repository
         public List<Inventory> GetAllInventories(IIdentity seller)
         {
               var sellerId  = HelperMethods.GetAuthnticatedUserId(seller);
-              return _db.Sellers.Include(i=>i.Inventories).FirstOrDefault(s=>s.SellerId == sellerId && s.Isdeleted == false).Inventories;
+              return _db.Sellers.Include(i=>i.Inventories.Where(e=>e.Isdeleted==false)).FirstOrDefault(s=>s.SellerId == sellerId && s.Isdeleted == false).Inventories;
         }
 
         // get inventory by id

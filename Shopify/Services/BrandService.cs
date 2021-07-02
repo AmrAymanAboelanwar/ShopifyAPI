@@ -40,12 +40,12 @@ namespace Shopify.Repository
 
         // get sub category's brands
 
-        public List<Brand> getBrandsForSubCategory(int id)
+        public  List<Brand> getBrandsForSubCategory(int id)
         {
             SubCategory subCategory = _db.SubCategories.Where(s => s.SubCategoryId == id && s.Isdeleted ==false).FirstOrDefault();
             if (subCategory != null)
             {
-              return _db.SubCategories.Include(i=>i.Brands).Where(s => s.SubCategoryId == id && s.Isdeleted == false).FirstOrDefault().Brands;
+              return  _db.SubCategories.Include(i=>i.Brands.Where(r=>r.Isdeleted==false)).Where(s => s.SubCategoryId == id && s.Isdeleted == false).FirstOrDefault().Brands;
             }
             return null;
         }

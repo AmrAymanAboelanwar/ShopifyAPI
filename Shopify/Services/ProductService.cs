@@ -93,7 +93,7 @@ namespace Shopify.Repository.Interfaces
         {
 
             string sellerId = HelperMethods.GetAuthnticatedUserId(seller);
-            List<Inventory> inventories = _db.Inventories.Include(r=>r.InventoryProducts).Where(s => s.sellerId == sellerId && s.Isdeleted==false).ToList();
+            List<Inventory> inventories = _db.Inventories.Include(r=>r.InventoryProducts.Where(e=>e.Isdeleted==false)).Where(s => s.sellerId == sellerId && s.Isdeleted==false).ToList();
            
             Product product = null;
             foreach (var invent in inventories)
@@ -103,7 +103,7 @@ namespace Shopify.Repository.Interfaces
                    var InventoryProduct = invent.InventoryProducts.FirstOrDefault(t => t.ProductId == id && t.Isdeleted == false);
                     if (InventoryProduct != null)
                     {
-                        product = _db.Products.Include(r=>r.ProductImages).SingleOrDefault(p => p.ProductId == id && p.IsdeletedBySeller==false);
+                        product = _db.Products.Include(r=>r.ProductImages.Where(r=>r.Isdeleted==false)).SingleOrDefault(p => p.ProductId == id && p.IsdeletedBySeller==false);
                     }
                 }
             }
@@ -156,7 +156,7 @@ namespace Shopify.Repository.Interfaces
 
         public async Task<List<Product>> GetWaitingProduct()
         {
-            Task<List<Product>> waitingProducts = _db.Products.Include(r => r.InventoryProducts).ThenInclude(r => r.Inventory).ThenInclude(p => p.Seller).ThenInclude(r => r.ApplicationUser).Where(r => r.Active == false && r.IsdeletedBySeller == false).ToListAsync();
+            Task<List<Product>> waitingProducts = _db.Products.Include(r => r.InventoryProducts.Where(r=>r.Isdeleted==false)).ThenInclude(r => r.Inventory).ThenInclude(p => p.Seller).ThenInclude(r => r.ApplicationUser).Where(r => r.Active == false && r.IsdeletedBySeller == false).ToListAsync();
             return await waitingProducts;
         }
 
@@ -289,7 +289,7 @@ namespace Shopify.Repository.Interfaces
 
         public List<Product> GetTopDeals()
         {
-            return _db.Products.Include(r => r.ProductImages).Where(p => p.IsdeletedBySeller == false && p.Active == true).OrderByDescending(p => p.Discount).ToList();
+            return _db.Products.Include(r => r.ProductImages).Where(p => p.IsdeletedBySeller == false && p.Active == true && p.Discount>0).OrderByDescending(p => p.Discount).ToList();
 
         }
 

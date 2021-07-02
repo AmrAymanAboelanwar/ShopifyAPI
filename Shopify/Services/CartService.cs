@@ -96,7 +96,7 @@ namespace Shopify.Services
         public Cart GetCart(int id , IIdentity Customer)
         {
             var CustomerID = HelperMethods.GetAuthnticatedUserId(Customer);
-            Cart cart = _db.Carts.Include(i=>i.CartItems).SingleOrDefault(c => c.CustomerID == CustomerID && c.CartId == id && c.Isdeleted == false);
+            Cart cart = _db.Carts.Include(i=>i.CartItems.Where(e=>e.Isdeleted==false)).SingleOrDefault(c => c.CustomerID == CustomerID && c.CartId == id && c.Isdeleted == false);
             return cart;
         }
     }
