@@ -47,16 +47,14 @@ namespace Shopify.Repository
         //edit Customer
         public async Task<ApplicationUser> editCustomer(UserData userData, IIdentity user)
         {
-            var customer =  _db.Customers.FirstOrDefault(s => s.CustomerId == HelperMethods.GetAuthnticatedUserId(user));
-
-            var userCustomer = _db.Users.FirstOrDefault(s => s.Id == customer.CustomerId);
-            userCustomer.Fname = userData.Fname;
-            userCustomer.Lname = userData.Lname;
-            userCustomer.Email = userData.Email;
-          
-           
+            var customer =  _db.ApplicationUsers.FirstOrDefault(c=>c.Id==HelperMethods.GetAuthnticatedUserId(user));
+            customer.Fname = userData.Fname;
+            customer.Lname = userData.Lname;
+            string token = await _userManager.GenerateChangeEmailTokenAsync(customer , userData.Email);
+            await _userManager.ChangeEmailAsync(customer , userData.Email , token);
+         
             await _db.SaveChangesAsync();
-            return userCustomer;
+            return customer;
         }
 
 

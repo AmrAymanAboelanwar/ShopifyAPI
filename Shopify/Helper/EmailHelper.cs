@@ -37,7 +37,8 @@ namespace Shopify.Helper
             email.Body = builder.ToMessageBody();
             email.From.Add(new MailboxAddress(_emailConfiuration.DisplayName, _emailConfiuration.Email));
 
-            using var smtp = new SmtpClient();
+            var smtp = new SmtpClient();
+            
             bool result = false;
             try
             {
@@ -47,7 +48,9 @@ namespace Shopify.Helper
                 smtp.Disconnect(true);
                 result = true;
             }
-            catch (Exception e) { }
+            catch (Exception e) {
+
+            }
             return result;
            
         }
