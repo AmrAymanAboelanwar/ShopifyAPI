@@ -71,7 +71,7 @@ namespace Shopify.Controllers
 
             if (ModelState.IsValid)
             {
-                bool result = _employeeService.EditEmployeeAsync(model , User.Identity);
+                bool result = _employeeService.EditEmployeeAsync(model , User.Identity).Result;
                 if (result)
                     return NoContent();
                 return NotFound();
