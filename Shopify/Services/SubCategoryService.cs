@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Shopify.Helper;
 using Shopify.Models;
+using Shopify.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -76,11 +77,11 @@ namespace Shopify.Repository
 
                     // delete old image
 
-                    File.Delete(subCategoryDetails.Image);
-
+                    
+                    File.Delete(subCategoryDetails.Image.Substring(23));
                     // create new image
                     string imagepath = await FileHelper.SaveImageAsync(subCategoryDetails.SubCategoryId, file, "SubCategories");
-                    subCategoryDetails.Image = imagepath;
+                    subCategoryDetails.Image = IPort.Port+imagepath;
                 }
                 subCategoryDetails.Name = category.Name;
 

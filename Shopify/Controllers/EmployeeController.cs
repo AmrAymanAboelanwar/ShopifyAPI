@@ -87,12 +87,12 @@ namespace Shopify.Controllers
 
         [HttpPut("EditSalary/{id}")]
         [Authorize(Roles = "Admin")]
-        public ActionResult EditEmployeeSalary(string id ,[FromForm] float salary)
+        public ActionResult EditEmployeeSalary(string id ,[FromBody] SalaryModelView salaryModelView)
         {
 
-            if (salary>0)
+            if (ModelState.IsValid)
              {
-                bool result = _employeeService.EditEmployeeSalary(id , salary);
+                bool result = _employeeService.EditEmployeeSalary(id , salaryModelView.Salary);
                 if (result)
                     return NoContent();
                 return NotFound();
