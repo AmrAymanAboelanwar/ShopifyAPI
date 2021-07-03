@@ -1,8 +1,10 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Shopify.Helper;
 using Shopify.Models;
 using Shopify.Services.Interfaces;
+using Shopify.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,9 +17,11 @@ namespace Shopify.Repository
     {
 
         ShopifyContext _db;
-        public SellerService(ShopifyContext db)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public SellerService(ShopifyContext db , UserManager<ApplicationUser> userManager)
         {
             _db = db;
+            _userManager = userManager;
         }
 
         public void AddSellerId(string id , string storeName , List<string > documents)
@@ -51,20 +55,18 @@ namespace Shopify.Repository
 
 
         //edit seller
-        public async Task<ApplicationUser> PutSeller(string id, [FromBody] ApplicationUser user)
+        public async Task<Seller> PutSeller(IIdentity user , EditSellerViewModel editSellerView)
         {
-            var seller = await _db.Sellers.FirstOrDefaultAsync(s => s.SellerId == id);
+            var seller = await _db.Sellers.Include(r=>r.ApplicationUser).FirstOrDefaultAsync(s => s.SellerId == HelperMethods.GetAuthnticatedUserId(user));
+            seller.ApplicationUser.Fname = editSellerView.Fname;
+            seller.ApplicationUser.Lname = editSellerView.Lname;
+            seller.ApplicationUser.Address = editSellerView.Address;
 
-            var userSeller =  _db.Users.FirstOrDefault(s => s.Id == seller.SellerId);
-            userSeller.Fname = user.Fname;
-            userSeller.Lname = user.Lname;
-            userSeller.Gender = user.Gender;
-            userSeller.Email = user.Email;
-            userSeller.UserName = user.UserName;
-            userSeller.Address = user.Address;
-            userSeller.Age = user.Age;
+            string token = await _userManager.GenerateChangeEmailTokenAsync(seller.ApplicationUser, editSellerView.Email);
+            await _userManager.ChangeEmailAsync(seller.ApplicationUser, editSellerView.Email, token);
+
             await _db.SaveChangesAsync();
-            return userSeller;
+            return seller;
         }
 
      

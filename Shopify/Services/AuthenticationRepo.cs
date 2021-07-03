@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Google.Apis.Auth;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Shopify.Helper;
@@ -32,9 +34,12 @@ namespace Shopify.Repository
         private SellerService _sellerRepo;
         private  JwtHelper _jwt;
         EmailHelper _emailHelper ;
+        private readonly IConfiguration _configuration;
+        private readonly IConfigurationSection _goolgeSettings;
 
-        public AuthenticationRepo(UserManager<ApplicationUser> userManager, ManageRoles manageRoles, CustomerServices customerRepo, EmployeeService employeeRepo, SellerService sellerRepo, IOptions<JwtHelper> jwt , EmailHelper emailHelper , FacebookService facebookService)
+        public AuthenticationRepo(UserManager<ApplicationUser> userManager, ManageRoles manageRoles, CustomerServices customerRepo, EmployeeService employeeRepo, SellerService sellerRepo, IOptions<JwtHelper> jwt , EmailHelper emailHelper , FacebookService facebookService, IConfiguration configuration)
         {
+            _configuration = configuration;
             _manageRoles = manageRoles;
             _userManager = userManager;
             _customerRepo=customerRepo;
@@ -43,6 +48,7 @@ namespace Shopify.Repository
             _jwt = jwt.Value;
              _emailHelper= emailHelper;
             _facebookService = facebookService;
+            _goolgeSettings = _configuration.GetSection("GoogleAuthSettings");
 
 
         }
@@ -146,8 +152,12 @@ namespace Shopify.Repository
 
         // login with google 
 
-        public async Task<ResponseAuth> LoginWithGoogleAsync(Payload payload)
+        public async Task<ResponseAuth> LoginWithGoogleAsync(GoogleLoginModel googleLoginModel)
         {
+
+            Payload payload =  await VerifyGoogleToken(googleLoginModel);
+            var info = new UserLoginInfo("GOOGLE", payload.Subject, "GOOGLE");
+
             var user = await _userManager.FindByEmailAsync(payload.Email);
             if (user == null)
             {
@@ -197,6 +207,24 @@ namespace Shopify.Repository
 
 
 
+        private async Task<GoogleJsonWebSignature.Payload> VerifyGoogleToken(GoogleLoginModel googleLoginModel)
+        {
+            try
+            {
+                var settings = new GoogleJsonWebSignature.ValidationSettings()
+                {
+                    Audience = new List<string>() { _goolgeSettings.GetSection("clientId").Value }
+                };
+
+                var payload = await GoogleJsonWebSignature.ValidateAsync(googleLoginModel.idToken, settings);
+                return payload;
+            }
+            catch (Exception ex)
+            {
+                //log an exception
+                return null;
+            }
+        }
 
 
         public async Task<ResponseAuth> RegisterCustomerAsync(RegisterModel model)

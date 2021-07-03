@@ -9,6 +9,7 @@ using Shopify.Models;
 using Microsoft.AspNetCore.Identity;
 using Shopify.Repository;
 using Microsoft.AspNetCore.Authorization;
+using Shopify.ViewModels;
 
 namespace Shopify.Controllers
 {  
@@ -82,21 +83,19 @@ namespace Shopify.Controllers
 
 
         //edit seller
-        [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<ActionResult<ApplicationUser>> EditSellerAsync(string id, [FromBody] ApplicationUser user)
+        [Authorize(Roles = "Seller")]
+        [HttpPut]
+        public async Task<ActionResult<ApplicationUser>> EditSellerAsync([FromBody] EditSellerViewModel data)
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest();
+                return BadRequest(data);
             }
             else
             {
-                user.Id = id;
-                var result = await _sellerRepo.PutSeller( id,  user);
-                if (result != null)
-                    return NoContent();
-                return NotFound();
+                 await _sellerRepo.PutSeller( User.Identity,  data);   
+                return NoContent();
+               
             }
 
         }
@@ -157,9 +156,9 @@ namespace Shopify.Controllers
         [Authorize(Roles = "Seller")]
         public ActionResult SellerOrder()
         {
-           _sellerRepo.SellerOrders(User.Identity);
+            List<Product> products = _sellerRepo.SellerOrders(User.Identity);
 
-            return NoContent();
+            return Ok(products);
 
         }
 

@@ -176,12 +176,13 @@ namespace Shopify.Controllers
 
         // login google 
         [HttpPost("login-google")]
-        public async Task<IActionResult> LoginGoogle([FromBody] GoogleLoginModel Data)
+        public async Task<IActionResult> LoginGoogle([FromForm] GoogleLoginModel Data)
         {
+            Data.idToken = "eyJhbGciOiJSUzI1NiIsImtpZCI6ImI2ZjhkNTVkYTUzNGVhOTFjYjJjYjAwZTFhZjRlOGUwY2RlY2E5M2QiLCJ0eXAiOiJKV1QifQ.eyJpc3MiOiJhY2NvdW50cy5nb29nbGUuY29tIiwiYXpwIjoiNzcyMDM3OTE2OTczLWRzc2o1ZmltbDBrZjNwaGRrbXFxbTY2ZDNpaDlnNjE0LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwiYXVkIjoiNzcyMDM3OTE2OTczLWRzc2o1ZmltbDBrZjNwaGRrbXFxbTY2ZDNpaDlnNjE0LmFwcHMuZ29vZ2xldXNlcmNvbnRlbnQuY29tIiwic3ViIjoiMTExNDI1OTMyMzIwOTg0ODkyODcyIiwiZW1haWwiOiJhbXIyNTExMTk5N0BnbWFpbC5jb20iLCJlbWFpbF92ZXJpZmllZCI6dHJ1ZSwiYXRfaGFzaCI6Ik40LV9MT1pPLUg1NDJCajk5SXZRMlEiLCJuYW1lIjoiYW1yIGF5bWFuIiwicGljdHVyZSI6Imh0dHBzOi8vbGgzLmdvb2dsZXVzZXJjb250ZW50LmNvbS9hL0FBVFhBSnpnSWRTS0NCNl9SUW9SSXo2Mk1kOUpmUldxRUZqY2xDQV9ac1paPXM5Ni1jIiwiZ2l2ZW5fbmFtZSI6ImFtciIsImZhbWlseV9uYW1lIjoiYXltYW4iLCJsb2NhbGUiOiJlbiIsImlhdCI6MTYyNTMxMDQ1MiwiZXhwIjoxNjI1MzE0MDUyLCJqdGkiOiIyNDZkYWIyYzYyOTBlNjZjMDU5YmJkMDczMDhkOWE4ZTUyZTk3YzI5In0.F0FWpExvxqCPxqua6K-e52r5MA5TmcxY02e0I1s1TnIBoAQyoNr5wFNCk7-aZQcYPTCh9XeqUeMHHM7ZMLHU5rgA4AYQ0ir77wusFrqIYf9ghAxz6eOMpxM1Z2x81nBV9J6Zz5p3cL0PC7et7jNpK6CQ-RYpvsXojr2zezamv7E7HAzjZta8UVM8igqW9ICcTuYJWCYdUAXVAbbQjamVVNnlfAXFKvinbavBnSsugYnm099ggbxlrLRIB963ThC2gB-R5ajkY_OGjUECE2e7lJsQG8HNy4xsCrsT_YtCIeMZUho1dk5rL7XkEPegHjJOhycEwMpi-mczMvoQlxcd1g";
             if (ModelState.IsValid)
             {
 
-                var result = await _authentication.LoginWithGoogleAsync(Data.payload);
+                var result = await _authentication.LoginWithGoogleAsync(Data);
                 if (!result.IsAuthenticated)
 
                     return BadRequest(result.Message);

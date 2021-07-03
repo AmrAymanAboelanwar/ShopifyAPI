@@ -9,6 +9,6 @@ namespace Shopify.ViewModels
     public class GoogleLoginModel
     {
 
-        public Payload payload { get; set; }
+        public string idToken { get; set; }
     }
 }

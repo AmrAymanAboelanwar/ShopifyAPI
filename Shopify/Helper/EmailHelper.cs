@@ -1,4 +1,5 @@
-﻿using MailKit.Net.Smtp;
+﻿
+using MailKit.Net.Smtp;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
@@ -55,7 +56,7 @@ namespace Shopify.Helper
                 result = true;
             }
             catch (Exception e) {
-
+                var r = e;
             }
             return result;
            
