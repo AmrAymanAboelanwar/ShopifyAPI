@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Shopify.Helper;
 using Shopify.Models;
 using Shopify.ViewModels;
@@ -13,9 +14,11 @@ namespace Shopify.Repository
     public class EmployeeService
     {
         ShopifyContext _db;
-        public EmployeeService(ShopifyContext db)
+        private readonly UserManager<ApplicationUser> _userManager;
+        public EmployeeService(ShopifyContext db , UserManager<ApplicationUser> userManager)
         {
             _db = db;
+            userManager = _userManager;
         }
 
         public void AddEmployeeId(string id , float salary , DateTime hireDate)
@@ -50,7 +53,7 @@ namespace Shopify.Repository
         }
 
 
-        public bool EditEmployee(EditEmployeeModelView model , IIdentity user)
+        public async Task<bool> EditEmployeeAsync(EditEmployeeModelView model , IIdentity user)
         {
             var employeeId = HelperMethods.GetAuthnticatedUserId(user);
             Employee employee = _db.Employees.Include(i=>i.ApplicationUser).FirstOrDefault(e => e.EmployeeId == employeeId && e.ApplicationUser.AdminLocked == false);
@@ -58,8 +61,11 @@ namespace Shopify.Repository
              {
                 employee.ApplicationUser.Fname = model.Fname;
                 employee.ApplicationUser.Lname = model.Lname;
-                employee.ApplicationUser.Email = model.Email;
                 employee.ApplicationUser.Address = model.Address;
+
+                string token = await _userManager.GenerateChangeEmailTokenAsync(employee.ApplicationUser, model.Email);
+                await _userManager.ChangeEmailAsync(employee.ApplicationUser, model.Email, token);
+
                 _db.SaveChanges();
                 return true;
              }
